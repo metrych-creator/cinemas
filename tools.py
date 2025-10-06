@@ -1,8 +1,11 @@
 import csv
+import json
 from typing import List
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+import seaborn as sns
+
 
 def plot_all_predictions(results: List) -> None:
     fig, axes = plt.subplots(2, 2, figsize=(6, 6), dpi=120)
@@ -19,6 +22,7 @@ def plot_all_predictions(results: List) -> None:
     plt.savefig('plots/all_predictions.png')
     plt.show()
     plt.close()
+
 
 def plot_feature_importances(models, X) -> None:
     fig, axes = plt.subplots(2, 1, figsize=(12, 8))
@@ -86,8 +90,6 @@ def plot_metrics(metrics, task: str) -> None:
         ax.set_xticks(x)
         ax.set_xticklabels(sorted_models)
         ax.grid(axis='y', linestyle='--', alpha=0.7)
-        # for xi, yi in zip(x, data[i]):
-        #     ax.hlines(y=yi, xmin=xi - 0.15, xmax=xi + 0.15, colors='red', linestyles='dashed', linewidth=1)
 
     plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.suptitle("Metrics Across Models", fontsize=16)
@@ -100,18 +102,22 @@ def plot_metrics(metrics, task: str) -> None:
     plt.close()
 
 
-def save_feature_importances(models, feature_names):
-    for name, pipe in models.items():
-        m = pipe.named_steps.get('model')
-        if m is None: continue
-        if hasattr(m, 'feature_importances_'):
-            imp = m.feature_importances_
-        elif hasattr(m, 'coef_'):
-            imp = np.abs(m.coef_).ravel()
-        else:
-            continue
-        idx = np.argsort(imp)[::-1]
-        with open(f"importances_{name}.csv", "w", newline="") as f:
-            w = csv.writer(f)
-            w.writerow(["feature","importance"])
-            [w.writerow([feature_names[i], imp[i]]) for i in idx]
+def plot_corr(corr, task, y):
+    corr_df = corr.to_frame(name='correlation')
+    plt.figure(figsize=(18,6))
+    sns.heatmap(corr_df, annot=True, fmt=".2f", cmap='coolwarm', cbar=True)
+    plt.plot("correlation")
+    plt.xlabel(y)
+    plt.title(f'Correlation with {y}', fontsize=12)
+    plot_path = os.path.join("plots", f"{task}_corr.png")
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    plt.show()
+
+
+def save_results(results, task, experiment):
+    log_dir = os.path.join('results')
+    os.makedirs(log_dir, exist_ok=True)
+    file_path = os.path.join(log_dir, f"{task}_{experiment}.json")
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=4)
+

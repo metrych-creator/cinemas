@@ -1,0 +1,42 @@
+{
+    "Logistic Regression": [
+        [
+            "Macro F1",
+            0.34
+        ],
+        [
+            "Hamming Loss",
+            0.11
+        ]
+    ],
+    "Decision Tree": [
+        [
+            "Macro F1",
+            0.35
+        ],
+        [
+            "Hamming Loss",
+            0.13
+        ]
+    ],
+    "Random Forest": [
+        [
+            "Macro F1",
+            0.28
+        ],
+        [
+            "Hamming Loss",
+            0.1
+        ]
+    ],
+    "XGBoost": [
+        [
+            "Macro F1",
+            0.38
+        ],
+        [
+            "Hamming Loss",
+            0.1
+        ]
+    ]
+}
