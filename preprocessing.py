@@ -89,6 +89,12 @@ df = df.fillna(fill_values)
 df.isna().sum()
 
 # %%
+df = df.astype({
+    'num_voted_users': 'int64',
+    'title_year': 'int64'
+})
+
+# %%
 """
 ## remove duplicates
 """
@@ -114,6 +120,9 @@ for col in df.select_dtypes(include='category').columns:
     print(df[col].value_counts())
 
 # %%
+df = df.drop(df[df['color'] == 'Green and Yellow'].index)
+
+# %%
 df.loc[df['title_year'] == 200000]
 
 # %%
@@ -132,8 +141,11 @@ for col in df.select_dtypes(include='category').columns:
     print(col)
 
 # %%
+df['color'] = df['color'].apply(lambda x: 1 if x == 'Color' else 0)
+
+# %%
 # one hot encoding
-df = pd.get_dummies(df, columns=['color', 'language', 'country', 'content_rating'], drop_first=True, dtype=int, sparse=False)
+df = pd.get_dummies(df, columns=['language', 'country', 'content_rating'], drop_first=True, dtype=int, sparse=False)
 
 # %%
 df.iloc[:5, -10:]
@@ -165,6 +177,27 @@ unique_genres = set(g for sublist in df['genres'].str.split('|') for g in sublis
 print("Number of unique genres:", len(unique_genres))
 
 # %%
+genre_sums = {col: df[col].sum() for col in df.columns if 'genres_' in col}
+genre_sums_df = pd.DataFrame(list(genre_sums.items()), columns=['Genre', 'Count']).sort_values('Count', ascending=False).reset_index(drop=True)
+genre_sums_df
+
+# %%
+genre_cols = [col for col in df.columns if col.startswith('genres_')]
+genre_counts = df[genre_cols].sum()
+cols_to_other = genre_counts[genre_counts < 100].index.tolist()
+df['genres_Other'] = df[cols_to_other].max(axis=1)
+df.drop(columns=cols_to_other, inplace=True)
+
+# %%
+x = [col for col in list(df.columns) if col.startswith('genres_')]
+len(x)
+
+# %%
+genre_sums = {col: df[col].sum() for col in df.columns if 'genres_' in col}
+genre_sums_df = pd.DataFrame(list(genre_sums.items()), columns=['Genre', 'Count']).sort_values('Count', ascending=False).reset_index(drop=True)
+genre_sums_df
+
+# %%
 from collections import Counter
 from itertools import chain
 
@@ -194,6 +227,11 @@ df = df.join(keywords_df)
 df.drop(columns=['keywords_list', 'keywords_filtered', 'plot_keywords', 'genres'], inplace=True)
 
 print(df.iloc[:5, -10:])
+
+# %%
+keywords_stat = [(col, df[col].sum()) for col in df.columns if col.startswith('keywords_')]
+keywords_stat_sorted = sorted(keywords_stat, key=lambda x: x[1], reverse=True)
+keywords_stat_sorted
 
 # %%
 for i, col in enumerate(df.columns):
