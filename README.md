@@ -43,11 +43,20 @@ Predicting the exact numerical rating:
 * **Deep Learning:** * **Architecture:** Multi-layer Perceptron (MLP) with `ReLU` activations.
     * **Output Layer:** Linear activation for continuous value prediction.
     * **Loss Function:** Mean Squared Error (MSE).
-
       
 <div align="center">
    <img src="plots/all_predictions.png" width="700px" alt="Regression Predictions vs Real">
    <img src="plots/regression_metrics_plot.png" width="700px" alt="Regression Metrics Plot">
+</div>
+
+## 5. Regression and Classification Performence
+
+Removing low-correlation features typically improves (lowers) the Hamming Loss because the model stops making random mistakes on labels it isn't sure about. It becomes more conservative and focuses on the most obvious categories. On the other hand, Macro F1-Score drops because those "weak" features were often the only clues for identifying rare classes. Without them, the model ignores niche categories entirely, which heavily penalizes the Macro average.
+
+By removing features with weak correlations, we simplify the model and reduce noise. This often leads to a lower (better) RMSE, as the model makes smaller, more stable errors and avoids "guessing" wildly. However, $R^2$ may decrease because the model loses the ability to explain "rare events" or subtle variations that only those weak features could capture. In short, the model becomes more reliable on average but explains less of the overall complexity.
+
+<div align="center">
+   <img src="plots/regression_classification_comparison.png" width="700px" alt="Classification and Regression Perfomence Plot">
 </div>
 
 ## 6. Installation & Usage
