@@ -2,12 +2,12 @@
 
 This repository contains project that explores movie metadata through two distinct lenses: **Multi-label Classification** to predict multiple movie genres for a single film and **Regression** to estimate IMDB scores.
 
-### Data
-It contains movie information like title, actors, genre, IMDB score. It contains several object columns.
+## 1. Data
+It contains movie information like title, actors, genre, IMDB score. It consist of over 5000 rows. There are several object columns.
 
 ![data](imgs/data.png)
 
-### 0. Preprocessing of data
+## 2. Preprocessing of data
 In preparation stage this steps has been done:
 - Dropping nans (only a few of them where here). 
 - Casting columns from object
@@ -18,14 +18,14 @@ In preparation stage this steps has been done:
 - One hot encoding of categorical columns (like: language, country, content_rating)
 - One hot encoding of multilabel columns (like: genres, keywords) - selected top k categories, assigned OTHER category to the rest
 
-## Data Pipeline
+### Data Pipeline
 
 * **Feature Engineering:** Processing the `genres` string (e.g., `Action|Sci-Fi`) into a binary matrix.
 * **Text Processing:** Basic NLP techniques applied to `plot_keywords`.
 * **Scaling:** `StandardScaler` applied to numerical features like `budget`, `gross`, and `facebook_likes` for Neural Network stability.
 
 
-### 1. Multi-label Classification (Genre Prediction)
+### 3. Multi-label Classification (Genre Prediction)
 Unlike standard classification, this task handles overlapping labels:
 * **Approach:** One-vs-Rest (OvR) strategy for classical models and multi-output architectures for Neural Networks.
 * **Classic ML:** Logistic Regression, Decision Tree, Random Forest, and XGBoost.
@@ -37,7 +37,7 @@ Unlike standard classification, this task handles overlapping labels:
    <img src="plots/classification_metrics_plot.png" width="700px" alt="Classification Metrics Plot">
 </div>
 
-### 2. Regression (IMDB Score Prediction)
+### 4. Regression (IMDB Score Prediction)
 Predicting the exact numerical rating:
 * **Classic ML:** Linear Regression, Decision Tree, Random Forest Regressor, and XGBoost.
 * **Deep Learning:** * **Architecture:** Multi-layer Perceptron (MLP) with `ReLU` activations.
